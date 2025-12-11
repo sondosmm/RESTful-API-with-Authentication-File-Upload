@@ -19,6 +19,8 @@ exports.register = asyncHandler(async (req, res, next) => {
     }
 
     const user = await User.create({ email, password });
+    
+    res.status(201).json({ id: user._id });
     const transporter = nodemailer.createTransport({
       service: "gmail",
       auth: {
@@ -37,7 +39,6 @@ exports.register = asyncHandler(async (req, res, next) => {
       text: "you are registered successfully",
     });
     console.log("user created successfully");
-    return res.status(201).json({ id: user._id });
    
   } catch (err) {
     console.error("Error during registration:", err);
