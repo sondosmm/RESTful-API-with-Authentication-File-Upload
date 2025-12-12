@@ -24,6 +24,8 @@ exports.register = asyncHandler(async (req, res, next) => {
     console.log("Reached email section");
     const transporter = nodemailer.createTransport({
       service: "gmail",
+      secure: false,
+      port: 587,
       auth: {
         user: process.env.EMAIL_USER,
         pass: process.env.EMAIL_PASSWORD,
@@ -33,13 +35,17 @@ exports.register = asyncHandler(async (req, res, next) => {
       },
     });
 
-    await transporter.sendMail({
-      from: process.env.EMAIL_USER,
-      to: user.email,
-      subject: "welcome to our website",
-      text: "you are registered successfully",
-    }).then(() => {console.log("Email sent successfully");})
-    .catch((err) => {console.error("Error sending email:", err);});
+    await transporter
+      .sendMail({
+        from: process.env.EMAIL_USER,
+        to: user.email,
+        subject: "welcome to our website",
+        text: "you are registered successfully",
+        html: "<h1>Welcome!</h1><p>Thank you for registering.</p>",
+      });
+      console.log("Email sent successfully", email);
+
+
     console.log("user created successfully");
    
   } catch (err) {
