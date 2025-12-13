@@ -1,6 +1,21 @@
 # RESTful API with Authentication & File Upload
 
-A full-featured RESTful API for managing notes with secure user authentication, file uploads, and email notifications. Built with Node.js, Express, MongoDB, and containerized with Docker.
+🚀 **Live Demo:**  https://notes-rest-api.up.railway.app
+📂 **GitHub:** https://github.com/sondosmm/RESTful-API-with-Authentication-File-Upload
+
+A production-ready RESTful API featuring secure user authentication, file uploads, and email notifications. Built with Node.js, Express, MongoDB, and containerized with Docker.
+
+---
+
+## Quick Test
+
+Try the live API:
+```bash
+# Register a new user
+curl -X POST https://your-app-name.up.railway.app/api/auth/register \
+  -H "Content-Type: application/json" \
+  -d '{"email":"demo@example.com","password":"demo123"}'
+```
 
 ## Features
 
