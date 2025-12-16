@@ -12,7 +12,7 @@ exports.getNotes = asyncHandler(async (req, res) => {
   const page = req.query.page * 1 || 1;
   const limit = req.query.limit * 1 || 4;
   const skip = (page - 1) * limit;
-  const notes = await Note.find().skip(skip).limit(limit);
+  const notes = await Note.find({user:req.user._id}).skip(skip).limit(limit);
 
   res.status(200).json({ total: notes.length, page, data: notes });
 });
@@ -22,7 +22,8 @@ exports.getNotes = asyncHandler(async (req, res) => {
 // @access Public
 exports.getNote = asyncHandler(async (req, res,next) => {
   const id = req.params.id;
-  const note = await Note.findById(id);
+  //lets see if it works
+  const note = await Note.findOne({_id:id,user:req.user._id});
   if (!note) {
    return next(new ApiError(`no note for this id: ${id}`,404));
   } else {
@@ -34,16 +35,20 @@ exports.getNote = asyncHandler(async (req, res,next) => {
 // @route POST /api/v1/categories
 // @access Public
 exports.createNote = asyncHandler(async (req, res) => {
+
   const title = req.body.title;
   let image = "";
   if (req.file) {
     image = `uploads/notes/${req.file.filename}`;
   }
 
-  const note = await Note.create({ title, slug: slugify(title), image });
-  res
-    .status(201)
-    .json({ message: "Note created successfully", data: note });
+  const note = await Note.create({
+    title,
+    slug: slugify(title),
+    image,
+    user: req.user._id,
+  });
+  res.status(201).json({ message: "Note created successfully", data: note });
 });
 
 //@des update category
@@ -61,7 +66,7 @@ exports.updateNote = asyncHandler(async (req, res,next) => {
   if (req.file) {
     update.image = `uploads/notes/${req.file.filename}`;
   }
-  const note = await Note.findById(id);
+  const note = await Note.findOne({_id:id,user:req.user._id});
   if (!note)
   {
     if (req.file) {
@@ -78,7 +83,7 @@ exports.updateNote = asyncHandler(async (req, res,next) => {
     }
   }
 
-  const updatedNote = await Note.findOneAndUpdate( {_id:id},update,{ new: true });
+  const updatedNote = await Note.findOneAndUpdate( {_id:id,user:req.user._id},update,{ new: true });
   
   
     res.status(200).json({ data: updatedNote });
@@ -92,7 +97,7 @@ exports.updateNote = asyncHandler(async (req, res,next) => {
 
 exports.deleteNote = asyncHandler(async(req, res,next) => {
   const{id}=req.params;
-  const note =await Note.findById(id);
+  const note =await Note.findOne({_id:id,user:req.user._id});
   if (!note) 
    return next(new ApiError(`no note for this id: ${id}`, 404));
 
