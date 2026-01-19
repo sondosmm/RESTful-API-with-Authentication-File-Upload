@@ -9,12 +9,5 @@ router.post("/register", asyncHandler(authController.register));
 router.post("/login", asyncHandler(authController.login));
 router.post("/logout", asyncHandler(authController.logout));
 router.post("/refresh", asyncHandler(authController.refresh));
-router.get(
-  "/protected",
-  auth,
-  asyncHandler((req, res) => {
-    res.json({ message: "Secure data", userId: req.userId });
-  })
-);
 
 module.exports = router;
